@@ -3,7 +3,7 @@ import numpy as np
 import os
 import datetime
 from ultralytics import YOLO
-from OCR import paddle_read_license
+from PaddleOCR import paddle_read_license
 
 yolo = YOLO('best (1).pt')
 
