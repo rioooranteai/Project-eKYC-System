@@ -1,0 +1,64 @@
+# ─── VENV ───────────────────────────────────────────────
+Lib/
+Scripts/
+Include/
+share/
+pyvenv.cfg
+.env
+.venv
+env/
+venv/
+
+# ─── PYTHON ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+*.spec
+
+
+# ─── DATASET & MODEL ────────────────────────────────────
+datasets/
+runs/
+weights/
+*.pt
+*.onnx
+*.plan
+*.engine
+*.tflite
+*.mlmodel
+
+# ─── ANOTASI HASIL GENERATE ─────────────────────────────
+Data/Generated/labels/
+Data/Generated/images/
+
+# ─── NOTEBOOK OUTPUT ────────────────────────────────────
+notebooks/.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ─── IDE ────────────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+
+# ─── OS ─────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── LOG & CACHE ────────────────────────────────────────
+*.log
+*.cache
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+
+# ─── ENV FILE ───────────────────────────────────────────
+.env
+.env.local
+.env.production
