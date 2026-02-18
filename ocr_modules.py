@@ -1,9 +1,12 @@
 import numpy as np
 import re
 import easyocr
+import logging
 
 from PIL import Image
-from paddleocr import PaddleOCR, draw_ocr
+from paddleocr import PaddleOCR
+
+logger = logging.getLogger()
 
 def paddle_read_license(image):
     try:
