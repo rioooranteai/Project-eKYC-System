@@ -1,4 +1,4 @@
-# 🪪 Project ID Card Recognition
+# 🪪 Project eKYC-System
 
 **Real-time Indonesian ID card (KTP) detection and NIK extraction using YOLOv8 + dual OCR engines with MLflow experiment tracking**
 
