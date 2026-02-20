@@ -346,4 +346,4 @@ def save_classes(fields: dict):
 
 
 if __name__ == "__main__":
-    generate_batch(n=100)
+    generate_batch(n=5)

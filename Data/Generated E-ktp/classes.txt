@@ -1,0 +1,19 @@
+Provinsi
+Kabupaten/Kota
+NIK
+Nama
+Tempat Tanggal Lahir
+Jenis Kelamin
+Alamat
+RT/RW
+Kelurahan/Desa
+Kecamatan
+Agama
+Status Perkawinan
+Pekerjaan
+Kewarganegaraan
+Berlaku Hingga
+Gol. Darah
+Foto
+Kota Dibuat
+Tanggal KTP Dikeluarkan

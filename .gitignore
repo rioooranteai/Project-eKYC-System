@@ -22,7 +22,6 @@ build/
 
 
 # ─── DATASET & MODEL ────────────────────────────────────
-Data/
 datasets/
 runs/
 weights/

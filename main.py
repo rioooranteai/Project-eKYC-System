@@ -4,7 +4,7 @@ import datetime
 from ultralytics import YOLO
 from ocr_modules import paddle_read_license
 
-yolo = YOLO('best (1).pt')
+yolo = YOLO('models/YOLO26/yolo26n.pt')
 
 capture = cv2.VideoCapture(0)
 capture.set(3, 1920)
