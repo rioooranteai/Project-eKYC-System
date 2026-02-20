@@ -25,7 +25,6 @@ build/
 datasets/
 runs/
 weights/
-*.pt
 *.onnx
 *.plan
 *.engine
