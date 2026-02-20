@@ -1,0 +1,14 @@
+artifact_uri: file:///content/drive/MyDrive/yolo-ektp/mlruns/977976952161302934/9c9c1fe31d3543efa32171e265885461/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '977976952161302934'
+lifecycle_stage: active
+run_id: 9c9c1fe31d3543efa32171e265885461
+run_name: mysterious-panda-913
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1771566548778
+status: 1
+tags: []
+user_id: root

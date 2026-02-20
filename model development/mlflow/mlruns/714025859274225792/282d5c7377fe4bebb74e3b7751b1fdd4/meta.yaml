@@ -1,0 +1,14 @@
+artifact_uri: file:///content/drive/MyDrive/yolo-ektp/mlruns/714025859274225792/282d5c7377fe4bebb74e3b7751b1fdd4/artifacts
+end_time: 1771565331401
+entry_point_name: ''
+experiment_id: '714025859274225792'
+lifecycle_stage: active
+run_id: 282d5c7377fe4bebb74e3b7751b1fdd4
+run_name: yolo26
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1771564829441
+status: 3
+tags: []
+user_id: root

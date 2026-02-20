@@ -1,0 +1,14 @@
+artifact_uri: file:///content/drive/MyDrive/yolo-ektp/mlruns/977976952161302934/c57c8cfd72b54837803181f95187c8a5/artifacts
+end_time: 1771565497166
+entry_point_name: ''
+experiment_id: '977976952161302934'
+lifecycle_stage: active
+run_id: c57c8cfd72b54837803181f95187c8a5
+run_name: valuable-turtle-929
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1771565332262
+status: 3
+tags: []
+user_id: root
