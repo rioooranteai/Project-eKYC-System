@@ -45,7 +45,7 @@ def get_yolo_service() -> YOLOService:
         )
 
 
-def cleanup_service() -> None:
+def cleanup_services() -> None:
     global _ocr_service, _yolo_service
 
     logger.info("Membersihkan semua service...")

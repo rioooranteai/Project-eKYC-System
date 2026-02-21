@@ -7,16 +7,17 @@ from typing import Optional
 
 import numpy as np
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
-from pydantic import BaseModel
 
-from app.core.dependencies import get_ocr_service
+from app.core.dependencies import get_ocr_service, get_yolo_service
 from app.services.webrtc_service import WebRTCService
+from app.services.yolo_service import YOLOBox
+from app.schemas.models import OfferRequest
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/webrtc", tags=["WebRTC"])
 
-
 _webrtc_service: Optional[WebRTCService] = None
+
 
 def get_webrtc_service() -> WebRTCService:
     global _webrtc_service
@@ -26,8 +27,6 @@ def get_webrtc_service() -> WebRTCService:
 
 
 class ConnectionManager:
-    """Kelola semua WebSocket aktif untuk broadcast notifikasi."""
-
     def __init__(self) -> None:
         self._connections: list[WebSocket] = []
 
@@ -54,36 +53,33 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 
-# ─── Schema ───────────────────────────────────────────────────────────────────
+class YOLOThrottle:
+    INTERVAL = 3.0
 
-class OfferRequest(BaseModel):
-    sdp:  str
-    type: str
+    def __init__(self) -> None:
+        self._last_ts: float = 0.0
 
+    def should_run(self) -> bool:
+        return (time.perf_counter() - self._last_ts) >= self.INTERVAL
 
-# ─── Endpoints ────────────────────────────────────────────────────────────────
+    def mark(self):
+        self._last_ts = time.perf_counter()
+
 
 @router.post("/offer")
 async def offer(payload: OfferRequest) -> dict:
-    """
-    Terima SDP offer dari browser, return SDP answer.
-    Setiap frame yang masuk akan broadcast notifikasi via WebSocket.
-    """
-    service     = get_webrtc_service()
-    frame_count = 0
+    service = get_webrtc_service()
+    yolo_service = get_yolo_service()
+    throttle = YOLOThrottle()
 
-    def on_frame(frame_ndarray) -> None:
-        nonlocal frame_count
-        frame_count += 1
+    def on_frame(frame: np.ndarray) -> None:
+        yolo_service.store_frame(frame)
 
-        import asyncio
-        asyncio.ensure_future(
-            manager.broadcast({
-                "event":       "frame_received",
-                "frame_index": frame_count,
-                "message":     f"Frame #{frame_count} berhasil ditangkap oleh server.",
-            })
-        )
+        if not throttle.should_run():
+            return
+
+        throttle.mark()
+        asyncio.ensure_future(_run_yolo(frame, yolo_service))
 
     try:
         answer = await service.handle_offer(
@@ -92,22 +88,108 @@ async def offer(payload: OfferRequest) -> dict:
             on_frame=on_frame,
         )
         return answer
-
     except Exception as e:
         logger.error("Gagal handle offer: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
 
 
+async def _run_yolo(frame: np.ndarray, yolo_service) -> None:
+    """Predict YOLO di thread pool — tidak block event loop."""
+    loop = asyncio.get_event_loop()
+
+    try:
+        boxes = await loop.run_in_executor(None, yolo_service.predict, frame)
+
+        if boxes:
+            yolo_service.store_box(boxes[0])
+            await manager.broadcast({
+                "event": "yolo_result",
+                "boxes": [b.to_dict() for b in boxes],
+            })
+            logger.debug("YOLO KTP detected: score=%.2f", boxes[0].score)
+        else:
+            yolo_service.store_box(None)
+            await manager.broadcast({"event": "no_ktp"})
+
+    except Exception as e:
+        logger.error("YOLO predict error: %s", e)
+
+
 @router.websocket("/ws/notify")
 async def notify(ws: WebSocket) -> None:
     """
-    WebSocket endpoint untuk FE subscribe notifikasi frame.
-    FE connect ke sini sebelum memulai WebRTC offer.
+    WebSocket endpoint untuk FE.
+    FE kirim { event: 'capture' } untuk trigger OCR.
+    FE kirim { event: 'ping' } untuk keep-alive.
     """
     await manager.connect(ws)
+
     try:
         await ws.send_json({"event": "connected", "message": "Siap menerima notifikasi."})
+
         while True:
-            await ws.receive_text()  # keep-alive, terima ping dari FE
+            data = await ws.receive_json()
+            event = data.get("event")
+
+            if event == "capture":
+                await _handle_capture(ws)
+            elif event == "ping":
+                await ws.send_json({"event": "pong"})
+
     except WebSocketDisconnect:
         manager.disconnect(ws)
+    except Exception as e:
+        logger.error("WebSocket error: %s", e)
+        manager.disconnect(ws)
+
+
+async def _handle_capture(ws: WebSocket) -> None:
+    ocr_service = get_ocr_service()
+    yolo_service = get_yolo_service()
+    loop = asyncio.get_event_loop()
+
+    if yolo_service.last_frame is None:
+        await ws.send_json({
+            "event": "capture_failed",
+            "reason": "Belum ada frame yang diterima.",
+        })
+        return
+
+    if yolo_service.last_box is None:
+        await ws.send_json({
+            "event": "capture_failed",
+            "reason": "KTP belum terdeteksi. Arahkan KTP ke kamera.",
+        })
+        return
+
+    await ws.send_json({
+        "event": "capture_processing",
+        "message": "Memproses OCR...",
+    })
+
+    try:
+        frame = yolo_service.last_frame
+        box = yolo_service.last_box
+        cropped = yolo_service.crop(frame, box)
+
+        ktp_data = await loop.run_in_executor(
+            None, ocr_service.extract_from_array, cropped
+        )
+
+        await ws.send_json({
+            "event": "ktp_result",
+            "data": ktp_data.to_dict(),
+        })
+
+        logger.info(
+            "Capture selesai | completeness=%.0f%% | NIK=%s",
+            ktp_data.completeness * 100,
+            ktp_data.nik or "NOT FOUND",
+        )
+
+    except Exception as e:
+        logger.error("Capture OCR error: %s", e)
+        await ws.send_json({
+            "event": "capture_failed",
+            "reason": f"OCR error: {str(e)}",
+        })
