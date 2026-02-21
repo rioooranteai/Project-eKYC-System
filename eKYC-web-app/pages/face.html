@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veriface — Verifikasi Wajah</title>
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/scan.css" />
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="logo">VERI<span>FACE</span></a>
+  <div class="nav-steps">
+    <div class="nav-step done">
+      <div class="step-num">1</div>
+      <span>Home</span>
+    </div>
+    <span class="nav-sep">›</span>
+    <div class="nav-step done">
+      <div class="step-num">2</div>
+      <span>Scan KTP</span>
+    </div>
+    <span class="nav-sep">›</span>
+    <div class="nav-step active">
+      <div class="step-num">3</div>
+      <span>Verifikasi Wajah</span>
+    </div>
+  </div>
+  <div class="status-pill" id="wsPill">
+    <div class="dot"></div>
+    <span id="wsStatus">Menghubungkan...</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- Video Panel -->
+  <div class="video-panel">
+    <div class="panel-label">// verifikasi wajah — posisikan wajah di dalam oval</div>
+
+    <div class="video-wrapper" id="videoWrapper">
+      <video id="video" autoplay playsinline muted></video>
+      <div class="face-oval" id="faceOval"></div>
+      <div class="video-overlay" id="overlay">
+        <div class="camera-icon">👤</div>
+        <div class="overlay-text">Memulai kamera...</div>
+      </div>
+      <div class="flash" id="flash"></div>
+    </div>
+
+    <div class="status-badge idle" id="faceStatus">
+      <span id="faceStatusText">⏳ Menunggu wajah...</span>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Liveness Score</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <a href="ocr.html" class="btn">‹ Ulangi Scan KTP</a>
+      <button class="btn danger" id="btnStop">■ Stop</button>
+    </div>
+  </div>
+
+  <!-- Log Panel -->
+  <div class="log-panel">
+    <div class="log-header">
+      <div class="log-title">Liveness Log</div>
+      <div class="log-count" id="logCount">0 events</div>
+    </div>
+
+    <div class="log-body" id="logBody">
+      <div class="log-empty" id="logEmpty">Belum ada event.</div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-label">Frames</div>
+        <div class="stat-value" id="statFrames">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Score</div>
+        <div class="stat-value" id="statScore">—</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Result</div>
+        <div class="stat-value" id="statResult" style="font-size:12px;padding-top:5px">—</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span>POST /webrtc/offer · WS /webrtc/ws/notify</span>
+  <span id="iceState" style="color: var(--accent)">ICE: —</span>
+</footer>
+
+<script src="../js/webrtc.js"></script>
+<script src="../js/face.js"></script>
+</body>
+</html>

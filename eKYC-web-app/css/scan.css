@@ -1,0 +1,127 @@
+/* ── Layout ── */
+main {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  height: calc(100vh - 61px - 44px);
+}
+
+.video-panel {
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-right: 1px solid var(--border);
+}
+
+/* ── Result card ── */
+.result-card {
+  margin-top: 4px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 12px;
+  gap: 12px;
+}
+
+.result-key {
+  color: var(--muted);
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+
+.result-val {
+  color: var(--accent);
+  text-align: right;
+  word-break: break-word;
+}
+
+.result-val.empty { color: var(--muted); font-style: italic; }
+
+.result-divider {
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Progress bar ── */
+.progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.progress-bar {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+/* ── Face overlay ── */
+.face-oval {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px; height: 260px;
+  border: 2px dashed var(--border);
+  border-radius: 50%;
+  z-index: 4;
+  transition: border-color 0.3s;
+  pointer-events: none;
+}
+
+.face-oval.detected {
+  border-color: var(--accent);
+  border-style: solid;
+  box-shadow: 0 0 24px var(--accent-glow);
+}
+
+/* ── Status badge ── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.status-badge.scanning { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-dim); }
+.status-badge.success  { color: #000; background: var(--accent); border-color: var(--accent); }
+.status-badge.failed   { color: var(--warn); border-color: var(--warn-dim); background: var(--warn-dim); }
+.status-badge.idle     { color: var(--muted); }
+
+/* ── Controls ── */
+.controls {
+  display: flex;
+  gap: 12px;
+}
+
+.controls .btn { flex: 1; justify-content: center; }

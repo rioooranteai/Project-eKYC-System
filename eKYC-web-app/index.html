@@ -1,10 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veriface — Identity Verification</title>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/home.css" />
 </head>
 <body>
-$END$
+
+<header>
+  <div class="logo">VERI<span>FACE</span></div>
+  <div class="nav-steps">
+    <div class="nav-step active">
+      <div class="step-num">1</div>
+      <span>Home</span>
+    </div>
+    <span class="nav-sep">›</span>
+    <div class="nav-step">
+      <div class="step-num">2</div>
+      <span>Scan KTP</span>
+    </div>
+    <span class="nav-sep">›</span>
+    <div class="nav-step">
+      <div class="step-num">3</div>
+      <span>Verifikasi Wajah</span>
+    </div>
+  </div>
+  <div style="width: 120px"></div>
+</header>
+
+<main>
+  <div class="hero">
+
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      eKYC · Real-time Identity Verification
+    </div>
+
+    <div class="hero-title">
+      Verifikasi<br/><span>Identitasmu</span>
+    </div>
+
+    <div class="hero-actions">
+      <a href="pages/ocr.html" class="btn primary">▶ Mulai Verifikasi</a>
+      <a href="#cara-kerja" class="btn">Cara Kerja</a>
+    </div>
+
+    <div class="hero-steps" id="cara-kerja">
+      <div class="hero-step">
+        <div class="step-icon">🪪</div>
+        <div class="step-label">// step 01</div>
+        <div class="step-title">Scan KTP</div>
+        <div class="overlay-text">Arahkan KTP ke kamera, sistem membaca data otomatis.</div>
+      </div>
+      <div class="hero-step">
+        <div class="step-icon">👤</div>
+        <div class="step-label">// step 02</div>
+        <div class="step-title">Verifikasi Wajah</div>
+        <div class="overlay-text">Hadapkan wajah ke kamera untuk deteksi liveness.</div>
+      </div>
+      <div class="hero-step">
+        <div class="step-icon">✅</div>
+        <div class="step-label">// step 03</div>
+        <div class="step-title">Selesai</div>
+        <div class="overlay-text">Identitas terverifikasi. Data aman dan terenkripsi.</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <span>VERIFACE · eKYC System</span>
+  <span>v1.0.0</span>
+</footer>
+
 </body>
 </html>
