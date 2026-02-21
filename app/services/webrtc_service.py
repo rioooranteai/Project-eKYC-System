@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Callable, Optional
+from typing import Callable
 
 import numpy as np
 from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
@@ -21,12 +21,12 @@ class VideoFrameTrack(MediaStreamTrack):
     kind = "video"
 
     def __init__(
-        self,
-        track: MediaStreamTrack,
-        on_frame: Callable[[np.ndarray], None],
+            self,
+            track: MediaStreamTrack,
+            on_frame: Callable[[np.ndarray], None],
     ) -> None:
         super().__init__()
-        self._track    = track
+        self._track = track
         self._on_frame = on_frame
 
     async def recv(self) -> VideoFrame:
@@ -37,16 +37,17 @@ class VideoFrameTrack(MediaStreamTrack):
 
         return frame
 
+
 class WebRTCService:
 
     def __init__(self) -> None:
         self._peer_connections: set[RTCPeerConnection] = set()
 
     async def handle_offer(
-        self,
-        sdp: str,
-        type_: str,
-        on_frame: Callable[[np.ndarray], None],
+            self,
+            sdp: str,
+            type_: str,
+            on_frame: Callable[[np.ndarray], None],
     ) -> dict:
         """
         Terima SDP offer dari FE, buat answer, dan setup pipeline frame.
@@ -87,7 +88,7 @@ class WebRTCService:
         await pc.setLocalDescription(answer)
 
         return {
-            "sdp":  pc.localDescription.sdp,
+            "sdp": pc.localDescription.sdp,
             "type": pc.localDescription.type,
         }
 

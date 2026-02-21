@@ -15,6 +15,7 @@ CLASS_NAMES = {0: "id card", 1: "photo"}
 
 MODEL_PATH = Path("model development/models/YOLO26/best_yolo26_5c0b9964.pt")
 
+
 @dataclass
 class YOLOBox:
     label: str
@@ -136,13 +137,3 @@ class YOLOService:
     def store_box(self, box: Optional["YOLOBox"]) -> None:
         """Simpan box terakhir hasil YOLO predict."""
         self.last_box = box
-
-
-
-
-
-
-
-
-
-

@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import asyncio
 import logging
+import time
 from typing import Optional
 
+import numpy as np
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 
+from app.core.dependencies import get_ocr_service
 from app.services.webrtc_service import WebRTCService
 
 logger = logging.getLogger(__name__)
