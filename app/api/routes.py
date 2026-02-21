@@ -6,7 +6,7 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 
-from services.webrtc_service import WebRTCService
+from app.services.webrtc_service import WebRTCService
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/webrtc", tags=["WebRTC"])

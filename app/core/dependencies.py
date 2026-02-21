@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 
 from fastapi import HTTPException
-from services.ocr_service import OCRService
+from app.services.ocr_service import OCRService
 
 logger = logging.getLogger(__name__)
 
