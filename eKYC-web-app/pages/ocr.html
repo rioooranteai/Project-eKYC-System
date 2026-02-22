@@ -41,6 +41,16 @@
 
     <div class="video-wrapper" id="videoWrapper">
       <video id="video" autoplay playsinline muted></video>
+
+      <!-- Canvas untuk bounding box YOLO -->
+      <canvas id="bboxCanvas"></canvas>
+
+      <!-- Tombol capture floating — nyala saat KTP terdeteksi -->
+      <button class="btn-capture" id="btnCapture" disabled>
+        <span class="btn-capture-icon">⊙</span>
+        <span>Capture KTP</span>
+      </button>
+
       <div class="video-overlay" id="overlay">
         <div class="camera-icon">🪪</div>
         <div class="overlay-text">Memulai kamera...</div>
@@ -78,7 +88,6 @@
     </div>
 
     <div class="log-body" id="resultBody">
-      <!-- KTP fields akan muncul di sini -->
       <div class="log-empty" id="resultEmpty">Belum ada data KTP.</div>
     </div>
 

@@ -2,14 +2,17 @@ from __future__ import annotations
 
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
-from api.routes import router as webrtc_router, get_webrtc_service
-from core.dependencies import set_services, cleanup_services, is_initialized
-from services.ocr_service import OCRService
-from services.yolo_service import YOLOService
+from app.api.routes import router as webrtc_router, get_webrtc_service
+from app.core.dependencies import set_services, cleanup_services, is_initialized
+from app.services.ocr_service import OCRService
+from app.services.yolo_service import YOLOService
 
 logging.basicConfig(
     level=logging.INFO,
@@ -32,7 +35,7 @@ async def lifespan(app: FastAPI):
     yolo_service = YOLOService(model_path=MODEL_PATH, device="cuda")
     ocr_service = OCRService(min_confidence=0.65)
 
-    set_services(ocr_scv=ocr_service, yolo_scv=yolo_service)
+    set_services(ocr_svc=ocr_service, yolo_svc=yolo_service)
 
     logger.info("Semua service siap. Server online.")
     logger.info("=" * 60)
@@ -61,6 +64,21 @@ app.add_middleware(
 
 app.include_router(webrtc_router)
 
+app.mount("/static", StaticFiles(directory="eKYC-web-app"), name='static')
+app.mount("/css", StaticFiles(directory="eKYC-web-app/css"), name="css")
+app.mount("/js",  StaticFiles(directory="eKYC-web-app/js"),  name="js")
+
+@app.get("/scan-ktp")
+def scan_ktp():
+    return FileResponse("eKYC-web-app/pages/ocr.html")
+
+@app.get("/verifikasi-wajah")
+def verifikasi_wajah():
+    return FileResponse("eKYC-web-app/pages/face.html")
+
+@app.get("/home")
+def index():
+    return FileResponse("eKYC-web-app/index.html")
 
 @app.get("/health")
 def health():

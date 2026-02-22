@@ -7,35 +7,8 @@ from typing import Callable
 import numpy as np
 from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
 from aiortc.contrib.media import MediaBlackhole
-from av import VideoFrame
 
 logger = logging.getLogger(__name__)
-
-
-class VideoFrameTrack(MediaStreamTrack):
-    """
-    Wrapper track yang intercept setiap frame video masuk,
-    lalu trigger callback ke layer atas (router).
-    """
-
-    kind = "video"
-
-    def __init__(
-            self,
-            track: MediaStreamTrack,
-            on_frame: Callable[[np.ndarray], None],
-    ) -> None:
-        super().__init__()
-        self._track = track
-        self._on_frame = on_frame
-
-    async def recv(self) -> VideoFrame:
-        frame = await self._track.recv()
-
-        img = frame.to_ndarray(format="bgr24")
-        self._on_frame(img)
-
-        return frame
 
 
 class WebRTCService:
@@ -49,21 +22,27 @@ class WebRTCService:
             type_: str,
             on_frame: Callable[[np.ndarray], None],
     ) -> dict:
-        """
-        Terima SDP offer dari FE, buat answer, dan setup pipeline frame.
-
-        Args:
-            sdp:      SDP string dari browser.
-            type_:    Tipe SDP ("offer").
-            on_frame: Callback dipanggil setiap frame diterima.
-
-        Returns:
-            Dict berisi sdp dan type answer untuk dikirim balik ke FE.
-        """
         pc = RTCPeerConnection()
         self._peer_connections.add(pc)
-
         sink = MediaBlackhole()
+
+        async def _consume_track(
+                track: MediaStreamTrack,
+                callback: Callable[[np.ndarray], None],
+        ) -> None:
+
+            frame_count = 0
+            while True:
+                try:
+                    frame = await track.recv()
+                    img = frame.to_ndarray(format="bgr24")
+                    frame_count += 1
+                    if frame_count % 30 == 0:
+                        logger.info("Frame consumed: %d", frame_count)
+                    callback(img)
+                except Exception as e:
+                    logger.info("Track ended atau error: %s", e)
+                    break
 
         @pc.on("track")
         async def on_track(track: MediaStreamTrack) -> None:
@@ -71,9 +50,8 @@ class WebRTCService:
                 await sink.addTrack(track)
                 return
 
-            wrapped = VideoFrameTrack(track, on_frame)
-            await sink.addTrack(wrapped)
             logger.info("Video track diterima dari peer.")
+            asyncio.ensure_future(_consume_track(track, on_frame))
 
         @pc.on("connectionstatechange")
         async def on_state() -> None:
@@ -98,6 +76,5 @@ class WebRTCService:
         logger.info("Peer connection ditutup dan dibersihkan.")
 
     async def close_all(self) -> None:
-        """Tutup semua peer connection — dipanggil saat shutdown."""
         await asyncio.gather(*[pc.close() for pc in self._peer_connections])
         self._peer_connections.clear()

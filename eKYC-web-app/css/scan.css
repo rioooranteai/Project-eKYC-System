@@ -125,3 +125,75 @@ main {
 }
 
 .controls .btn { flex: 1; justify-content: center; }
+
+/* ── Canvas bounding box ── */
+#bboxCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* ── Tombol Capture floating ── */
+.btn-capture {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: #000000cc;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: not-allowed;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.btn-capture-icon {
+  font-size: 16px;
+  transition: transform 0.3s;
+}
+
+/* Saat KTP terdeteksi — nyala */
+.btn-capture.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 20px var(--accent-glow);
+  animation: captureGlow 2s ease-in-out infinite;
+}
+
+.btn-capture.active:hover {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 0 32px var(--accent-glow);
+}
+
+.btn-capture.active:hover .btn-capture-icon {
+  transform: scale(1.2);
+}
+
+/* Saat processing */
+.btn-capture.processing {
+  border-color: var(--muted);
+  color: var(--muted);
+  cursor: wait;
+  animation: none;
+}
+
+@keyframes captureGlow {
+  0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+  50%       { box-shadow: 0 0 36px var(--accent-glow), 0 0 60px var(--accent-dim); }
+}

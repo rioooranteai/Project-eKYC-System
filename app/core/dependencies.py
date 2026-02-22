@@ -12,12 +12,12 @@ _yolo_service: Optional[YOLOService] = None
 
 
 def set_services(
-        ocr_scv: OCRService,
+        ocr_svc: OCRService,
         yolo_svc: YOLOService
 ) -> None:
     global _ocr_service, _yolo_service
 
-    _ocr_service = ocr_scv
+    _ocr_service = ocr_svc
     _yolo_service = yolo_svc
 
     logger.info("=" * 60)
@@ -44,6 +44,7 @@ def get_yolo_service() -> YOLOService:
             detail="OCR service not initialized. Server still be starting up."
         )
 
+    return _yolo_service
 
 def cleanup_services() -> None:
     global _ocr_service, _yolo_service

@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 CLASS_NAMES = {0: "id card", 1: "photo"}
 
-MODEL_PATH = Path("model development/models/YOLO26/best_yolo26_5c0b9964.pt")
+MODEL_PATH = Path(__file__).parent.parent.parent / "model development" / "models" / "YOLO26" / "best_yolo26_5c0b9964.pt"
 
 
 @dataclass
@@ -44,7 +44,7 @@ class YOLOBox:
 
 
 class YOLOService:
-    def __init(
+    def __init__(
             self,
             model_path: str | Path = MODEL_PATH,
             confidence: float = 0.5,
@@ -60,6 +60,7 @@ class YOLOService:
 
     def _load(self, model_path: str | Path) -> None:
         path = Path(model_path)
+        print(f"DEBUG PATH: {path.resolve()}")
         if not path.exists():
             raise FileNotFoundError(f"Model YOLO tidak ditemukan: {path}")
 
